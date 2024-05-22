@@ -20,8 +20,9 @@ public class BarcodesPageViewModel: ObservableObject
 
 		Barcodes = _barcodes.Items.ToList();
 
+		CmdAdd = new RelayCommand(Add);
 		CmdMsgHide = new RelayCommand(MessageHide);
-		CmdClear   = new RelayCommand(ItemsClear);
+		CmdClear   = new AsyncRelayCommand(ItemsClear);
 		CmdSend    = new RelayCommand(ItemsSend);
 	}
 
@@ -31,27 +32,44 @@ public class BarcodesPageViewModel: ObservableObject
 		var item = Barcodes.FirstOrDefault(b => b.Item == e.Item);
 		if (item == null) return;
 		Barcodes.Remove(item);
+		OnPropertyChanged(nameof(Barcodes));
 	}
 	private void Barcodes_Added(object sender, ChangedBarcodeEventArgs e)
 	{
 		Barcodes.Add(new(e.Item));
+		OnPropertyChanged(nameof(Barcodes));
 	}
 	private void Barcodes_Cleared(object sender, EventArgs e)
 	{
 		Barcodes.Clear();
+		OnPropertyChanged(nameof(Barcodes));
 	}
 	#endregion
 
 	public List<BarcodeViewModel> Barcodes { get; }
 
 	#region Commands
-
+	public ICommand CmdAdd { get; }
 	public ICommand CmdClear { get; }
 	public ICommand CmdSend { get; }
 	public ICommand CmdMsgHide { get; }
 
-	private void ItemsClear()
+	private void Add()
 	{
+		List<string> defaultBarcodes = new()
+		{
+			"23016371",
+			"23019710",
+			"23019759",
+			"23019965",
+		};
+		foreach (var barcode in defaultBarcodes)
+			_barcodes.Add(barcode);
+	}
+	private async Task ItemsClear()
+	{
+		bool answer = await Shell.Current.DisplayAlert("Штрихкоды", "Очистить список?", "Да", "Нет");
+		if (answer) _barcodes.Clear();
 	}
 	private void ItemsSend()
 	{

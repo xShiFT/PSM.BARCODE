@@ -27,24 +27,17 @@ namespace PSM.Barcode
 			builder.Services.AddSingleton<BarcodesService>();
 			builder.Services.AddSingleton<RestService>();
 
-
 			builder.Services.AddSingleton<MainPage>();
-			builder.Services.AddSingleton<MainPageViewModel>();
-
 			builder.Services.AddSingleton<LoginPage>();
-			builder.Services.AddSingleton<LoginPageViewModel>();
-
 			builder.Services.AddSingleton<OptionsPage>();
-			builder.Services.AddSingleton<OptionsPageViewModel>();
-
 			builder.Services.AddSingleton<BarcodesPage>();
-			builder.Services.AddSingleton<BarcodesPageViewModel>();
-
 			builder.Services.AddSingleton<PairsPage>();
+
+			builder.Services.AddSingleton<MainPageViewModel>();
+			builder.Services.AddSingleton<LoginPageViewModel>();
+			builder.Services.AddSingleton<OptionsPageViewModel>();
+			builder.Services.AddSingleton<BarcodesPageViewModel>();
 			builder.Services.AddSingleton<PairsPageViewModel>();
-
-
-
 
 #if DEBUG
 			builder.Logging.AddDebug();

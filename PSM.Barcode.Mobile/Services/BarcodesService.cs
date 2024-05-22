@@ -10,13 +10,14 @@ public class BarcodesService(DbCtx ctx)
 
 	public IEnumerable<BarcodeViewModel> Items => _ctx.Items.Select(item => new BarcodeViewModel(item));
 
-	public void Push(string barcode)
+	public void Add(string barcode)
 	{
-		var max  = _ctx.Items.Max(itm => itm.ID);
+		var last  = _ctx.Items.Any() ? _ctx.Items.Max(itm => itm.ID) : 0;
+
 		var item = _ctx.Items.FirstOrDefault(itm => itm.Barcode == barcode);
 		if (item != null) return;
 
-		item = new BarcodeItem { ID = max + 1, Barcode = barcode };
+		item = new BarcodeItem { ID = last + 1, Barcode = barcode };
 		_ctx.Items.Add(item);
 		_ctx.SaveChanges();
 
@@ -26,8 +27,10 @@ public class BarcodesService(DbCtx ctx)
 	{
 		var item = _ctx.Items.FirstOrDefault(itm => itm.Barcode == barcode);
 		if (item == null) return;
+
 		_ctx.Items.Remove(item);
 		_ctx.SaveChanges();
+
 		Deleted?.Invoke(this, new ChangedBarcodeEventArgs(item));
 	}
 	public void Clear()

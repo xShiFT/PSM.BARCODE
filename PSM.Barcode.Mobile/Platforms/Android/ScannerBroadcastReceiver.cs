@@ -40,7 +40,7 @@ public class ScannerBroadcastReceiver : BroadcastReceiver
 		if (result != null)
 		{
 			if (result.Length == 8)
-				_barcodes?.Push(result);
+				_barcodes?.Add(result);
 
 			if (result.StartsWith("srv="))
 			{
