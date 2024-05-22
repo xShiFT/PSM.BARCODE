@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using PSM.Barcode.DB;
+using PSM.Barcode.Services;
 using PSM.Barcode.ViewModels;
 using PSM.Barcode.Views;
 
@@ -18,6 +20,13 @@ namespace PSM.Barcode
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 				});
+
+			builder.Services.AddDbContext<DbCtx>();
+			builder.Services.AddSingleton(Preferences.Default);
+			builder.Services.AddSingleton<OptionsService>();
+			builder.Services.AddSingleton<BarcodesService>();
+			builder.Services.AddSingleton<RestService>();
+
 
 			builder.Services.AddSingleton<MainPage>();
 			builder.Services.AddSingleton<MainPageViewModel>();

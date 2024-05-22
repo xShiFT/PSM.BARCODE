@@ -82,10 +82,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\PSM.Barcode.Common\PSM.Barcode.Common.csproj" />
 	</ItemGroup>
 
