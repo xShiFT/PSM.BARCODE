@@ -22,14 +22,22 @@
 			<CollectionView
 				ItemsSource="{Binding Barcodes}"
 				ItemsUpdatingScrollMode="KeepItemsInView"
+				SelectionMode="Single"
 			>
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="vm:BarcodeViewModel">
-						<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5" Padding="5">
-							<Label Grid.Column="0" Margin="5,0" Text="{Binding ID}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
-							<Label Grid.Column="1" Margin="5,0" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
-							<Label Grid.Column="2" Margin="5,0" Text="{Binding Outcode}" FontSize="Medium" />
-						</Grid>
+						<SwipeView>
+							<SwipeView.LeftItems>
+								<SwipeItems>
+									<SwipeItem Text="Удалить" BackgroundColor="LightPink" Command="{Binding CmdRemove}" />
+								</SwipeItems>
+							</SwipeView.LeftItems>
+							<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5" Padding="5">
+								<Label Grid.Column="0" Margin="5,0" Text="{Binding ID}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
+								<Label Grid.Column="1" Margin="5,0" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
+								<Label Grid.Column="2" Margin="5,0" Text="{Binding Outcode}" FontSize="Medium" />
+							</Grid>
+						</SwipeView>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>

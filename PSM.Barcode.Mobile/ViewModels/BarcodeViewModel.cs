@@ -1,12 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PSM.Barcode.DB;
 using PSM.Barcode.Models;
+using PSM.Barcode.Services;
+using System.Windows.Input;
 namespace PSM.Barcode.ViewModels;
 
-public class BarcodeViewModel(BarcodeItem item) : ObservableObject
+public class BarcodeViewModel : ObservableObject
 {
-	private readonly BarcodeItem _item = item;
-	public BarcodeItem Item => _item;
+	private readonly BarcodeItem _item;
+	private readonly BarcodesService? _barcodes;
+
+	public BarcodeViewModel(BarcodeItem item)
+    {
+		_item = item;
+
+		_barcodes = ServiceProvider.GetService<BarcodesService>();
+
+		CmdRemove = new RelayCommand(Remove);
+	}
+
+    public BarcodeItem Item => _item;
 
 	public int ID => _item.ID;
 	public string Barcode => _item.Barcode;
@@ -27,4 +41,9 @@ public class BarcodeViewModel(BarcodeItem item) : ObservableObject
 		}
 	}
 
+	public ICommand CmdRemove { get; }
+	private void Remove()
+	{
+		_barcodes?.Delete(Barcode);
+	}
 }
