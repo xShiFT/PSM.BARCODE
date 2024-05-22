@@ -8,14 +8,15 @@ public class BarcodesService(DbCtx ctx)
 {
 	private readonly DbCtx _ctx = ctx;
 
-	public IEnumerable<BarcodeViewModel> GetItems() => _ctx.Items.Select(item => new BarcodeViewModel(item));
+	public IEnumerable<BarcodeViewModel> Items => _ctx.Items.Select(item => new BarcodeViewModel(item));
 
 	public void Push(string barcode)
 	{
+		var max  = _ctx.Items.Max(itm => itm.ID);
 		var item = _ctx.Items.FirstOrDefault(itm => itm.Barcode == barcode);
 		if (item != null) return;
 
-		item = new BarcodeItem { Barcode = barcode };
+		item = new BarcodeItem { ID = max + 1, Barcode = barcode };
 		_ctx.Items.Add(item);
 		_ctx.SaveChanges();
 

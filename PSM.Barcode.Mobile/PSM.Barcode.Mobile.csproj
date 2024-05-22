@@ -40,6 +40,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <AndroidLibrary Include="Jars\platform_sdk_scanner.jar" />
+	</ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+    <EmbeddedJar Include="Jars\platform_sdk_scanner.jar" />
+  </ItemGroup>
+
+	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
