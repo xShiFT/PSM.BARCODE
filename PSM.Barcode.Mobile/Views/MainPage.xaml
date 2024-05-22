@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:vm="clr-namespace:PSM.Barcode.ViewModels"
+	x:Class="PSM.Barcode.Views.MainPage"
+	x:DataType="vm:MainPageViewModel"
+>
+	<Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*">
+		<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Штрихкоды" Command="{Binding CmdToBarcodes}" BackgroundColor="{StaticResource Magenta}" />
+			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Пары" Command="{Binding CmdToPairs}" BackgroundColor="{StaticResource Magenta}" />
+			<Button Margin="0,15,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Пользователь" Command="{Binding CmdToLogins}" />
+			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Настройки" Command="{Binding CmdToOptions}" />
+		</VerticalStackLayout>
+	</Grid>
+</ContentPage>
