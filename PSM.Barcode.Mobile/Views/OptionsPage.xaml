@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PSM.Barcode.Views.OptionsPage"
-             Title="OptionsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:vm="clr-namespace:PSM.Barcode.ViewModels"
+	x:Class="PSM.Barcode.Views.OptionsPage"
+	x:DataType="vm:OptionsPageViewModel"
+	Title="Настройки"
+>
+	<!--<ContentPage.ToolbarItems>
+		<ToolbarItem Text="Default" Command="{Binding CmdDefaultValue}" />
+	</ContentPage.ToolbarItems>-->
+	<Grid ColumnDefinitions="*,Auto,*" RowDefinitions="*,Auto,*,Auto" RowSpacing="5" Padding="5">
+		<Frame Grid.Column="1" Grid.Row="1" Padding="0">
+			<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="5" Padding="0" Margin="0">
+				<Label Grid.Row="0" Margin="5,0" Text="Сервер:" FontSize="Title" />
+				<Entry Grid.Row="1" Margin="5,0" Placeholder="Хост" Text="{Binding ServerHost, Mode=OneWay}" IsReadOnly="True" />
+				<Entry Grid.Row="2" Margin="5,0" Placeholder="IP" Text="{Binding ServerIP, Mode=OneWay}" IsReadOnly="True" />
+				<HorizontalStackLayout Grid.Row="3">
+					<CheckBox Margin="3,0" IsChecked="{Binding UseHost}" />
+					<Label Margin="3,0" Text="Использовать Хост" VerticalOptions="Center" />
+				</HorizontalStackLayout>
+				<Button Grid.Row="4" Margin="3" Padding="25,0" Text="Проверка" Command="{Binding CmdConnectionTest}" HorizontalOptions="Center" />
+			</Grid>
+		</Frame>
+		
+		
+		<Frame Grid.Row="3" Grid.ColumnSpan="3" IsVisible="{Binding MessageVisible}">
+			<VerticalStackLayout HorizontalOptions="Fill">
+				<Label Margin="3" Text="{Binding Message}" />
+				<HorizontalStackLayout>
+					<Button Padding="10,5" Text="Закрыть" Command="{Binding CmdMsgHide}" MinimumHeightRequest="25" />
+				</HorizontalStackLayout>
+			</VerticalStackLayout>
+		</Frame>
+	</Grid>
 </ContentPage>

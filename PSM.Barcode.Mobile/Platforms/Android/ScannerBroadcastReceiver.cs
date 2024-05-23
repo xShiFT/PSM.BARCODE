@@ -2,7 +2,6 @@
 using Android.Content;
 using Android.Device;
 using Android.Widget;
-
 using PSM.Barcode.Services;
 
 namespace PSM.Barcode.Scanner;

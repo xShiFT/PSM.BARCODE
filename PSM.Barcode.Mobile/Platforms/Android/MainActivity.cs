@@ -2,7 +2,6 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.Device;
-
 using PSM.Barcode.Scanner;
 using PSM.Barcode.Services;
 

@@ -4,26 +4,24 @@ using PSM.Barcode.ViewModels;
 
 namespace PSM.Barcode.Services;
 
-public class BarcodesService(DbCtx ctx)
+public class PairsService(DbCtx ctx)
 {
 	private readonly DbCtx _ctx = ctx;
 
-	public IEnumerable<BarcodeViewModel> Items => _ctx.Items.Select(item => new BarcodeViewModel(item));
-	public int Count => _ctx.Items.Count();
+	public IEnumerable<BarcodePair> Items => _ctx.Pairs.AsEnumerable();
+	public int Count => Items.Count();
 
-	public void Add(string barcode)
+	public void Add(string barcode, string outcode)
 	{
-		var last  = _ctx.Items.Any() ? _ctx.Items.Max(itm => itm.ID) : 0;
-
-		var item = _ctx.Items.FirstOrDefault(itm => itm.Barcode == barcode);
+		var item = _ctx.Pairs.FirstOrDefault(itm => itm.Barcode == barcode);
 		if (item != null)
 		{
 			Dublicated?.Invoke(this, new (item));
 			return;
 		}
 
-		item = new BarcodeItem { ID = last + 1, Barcode = barcode };
-		_ctx.Items.Add(item);
+		item = new BarcodePair { Barcode = barcode, Outcode = outcode };
+		_ctx.Pairs.Add(item);
 		_ctx.SaveChanges();
 
 		Added?.Invoke(this, new (item));
@@ -31,10 +29,10 @@ public class BarcodesService(DbCtx ctx)
 	}
 	public void Delete(string barcode)
 	{
-		var item = _ctx.Items.FirstOrDefault(itm => itm.Barcode == barcode);
+		var item = _ctx.Pairs.FirstOrDefault(itm => itm.Barcode == barcode);
 		if (item == null) return;
 
-		_ctx.Items.Remove(item);
+		_ctx.Pairs.Remove(item);
 		_ctx.SaveChanges();
 
 		Deleted?.Invoke(this, new (item));
@@ -42,17 +40,17 @@ public class BarcodesService(DbCtx ctx)
 	}
 	public void Clear()
 	{
-		foreach (var item in _ctx.Items)
-			_ctx.Items.Remove(item);
+		foreach (var item in _ctx.Pairs)
+			_ctx.Pairs.Remove(item);
 		_ctx.SaveChanges();
 
 		Cleared?.Invoke(this, new ());
 		Changed?.Invoke(this, new ());
 	}
 
-	public delegate void DublicatedEventHandler(object sender, ChangedBarcodeEventArgs e);
-	public delegate void AddedEventHandler(object sender, ChangedBarcodeEventArgs e);
-	public delegate void DeletedEventHandler(object sender, ChangedBarcodeEventArgs e);
+	public delegate void DublicatedEventHandler(object sender, ChangedPairEventArgs e);
+	public delegate void AddedEventHandler(object sender, ChangedPairEventArgs e);
+	public delegate void DeletedEventHandler(object sender, ChangedPairEventArgs e);
 	public delegate void ClearedEventHandler(object sender, EventArgs e);
 	public delegate void ChangedEventHandler(object sender, EventArgs e);
 
@@ -63,7 +61,7 @@ public class BarcodesService(DbCtx ctx)
 	public event ChangedEventHandler? Changed;
 }
 
-public class ChangedBarcodeEventArgs(BarcodeItem item)
+public class ChangedPairEventArgs(BarcodePair item)
 {
-	public BarcodeItem Item { get; } = item;
+	public BarcodePair Item { get; } = item;
 }

@@ -22,22 +22,23 @@ namespace PSM.Barcode
 				});
 
 			builder.Services.AddDbContext<DbCtx>();
-			builder.Services.AddSingleton(Preferences.Default);
-			builder.Services.AddSingleton<OptionsService>();
 			builder.Services.AddSingleton<BarcodesService>();
-			builder.Services.AddSingleton<RestService>();
+			builder.Services.AddSingleton<PairsService>();
+			builder.Services.AddSingleton(Preferences.Default);
+			builder.Services.AddScoped<OptionsService>();
+			builder.Services.AddScoped<RestService>();
 
-			builder.Services.AddSingleton<MainPage>();
-			builder.Services.AddSingleton<LoginPage>();
-			builder.Services.AddSingleton<OptionsPage>();
-			builder.Services.AddSingleton<BarcodesPage>();
-			builder.Services.AddSingleton<PairsPage>();
+			builder.Services.AddTransient<MainPage>();
+			builder.Services.AddTransient<LoginPage>();
+			builder.Services.AddTransient<OptionsPage>();
+			builder.Services.AddTransient<BarcodesPage>();
+			builder.Services.AddTransient<PairsPage>();
 
-			builder.Services.AddSingleton<MainPageViewModel>();
-			builder.Services.AddSingleton<LoginPageViewModel>();
-			builder.Services.AddSingleton<OptionsPageViewModel>();
-			builder.Services.AddSingleton<BarcodesPageViewModel>();
-			builder.Services.AddSingleton<PairsPageViewModel>();
+			builder.Services.AddTransient<MainPageViewModel>();
+			builder.Services.AddTransient<LoginPageViewModel>();
+			builder.Services.AddTransient<OptionsPageViewModel>();
+			builder.Services.AddTransient<BarcodesPageViewModel>();
+			builder.Services.AddTransient<PairsPageViewModel>();
 
 #if DEBUG
 			builder.Logging.AddDebug();

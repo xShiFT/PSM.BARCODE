@@ -7,21 +7,21 @@
 	x:DataType="vm:BarcodesPageViewModel"
 	Title="Штрихкоды"
 >
-	<ContentPage.ToolbarItems>
+	<!--<ContentPage.ToolbarItems>
 		<ToolbarItem Text="Add" Command="{Binding CmdAdd}" />
-	</ContentPage.ToolbarItems>
+	</ContentPage.ToolbarItems>-->
 	<Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
 		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-			<Button Grid.Column="0" Padding="10,5" Text="Очистить" Command="{Binding CmdClear}" MinimumHeightRequest="25" BackgroundColor="{StaticResource Magenta}" />
-			<Button Grid.Column="2" Padding="10,5" Text="Отправить" Command="{Binding CmdSend}" MinimumHeightRequest="25" />
+			<Button Grid.Column="0" Padding="25,10" Text="Очистить" FontSize="Medium" Command="{Binding CmdClear}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Magenta}" />
+			<Button Grid.Column="2" Padding="25,10" Text="Отправить" FontSize="Medium" Command="{Binding CmdSend}" MinimumHeightRequest="40" />
 		</Grid>
-		<Frame Grid.Row="1">
+		<Frame Grid.Row="1" Padding="0,3">
 			<HorizontalStackLayout>
 				<Label Margin="15,3,3,3" Text="Собранно:" FontSize="Medium" VerticalOptions="Center" />
 				<Label Margin="3,3,15,3" Text="{Binding Barcodes.Count}" FontSize="Medium" FontAttributes="Bold" VerticalOptions="Center" />
 			</HorizontalStackLayout>
 		</Frame>
-		<Frame Grid.Row="2">
+		<Frame Grid.Row="2" Padding="5">
 			<CollectionView
 				ItemsSource="{Binding Barcodes}"
 				ItemsUpdatingScrollMode="KeepItemsInView"
@@ -36,9 +36,9 @@
 								</SwipeItems>
 							</SwipeView.LeftItems>
 							<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5" Padding="5">
-								<Label Grid.Column="0" Margin="5,0" Text="{Binding ID}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
-								<Label Grid.Column="1" Margin="5,0" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
-								<Label Grid.Column="2" Margin="5,0" Text="{Binding Outcode}" FontSize="Medium" />
+								<Label Grid.Column="0" Text="{Binding ID}" FontSize="Small" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
+								<Label Grid.Column="1" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
+								<Label Grid.Column="2" Text="{Binding Outcode}" />
 							</Grid>
 						</SwipeView>
 						<!---->

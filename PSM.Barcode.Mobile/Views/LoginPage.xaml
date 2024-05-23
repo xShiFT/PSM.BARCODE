@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PSM.Barcode.Views.LoginPage"
-             Title="LoginPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:vm="clr-namespace:PSM.Barcode.ViewModels"
+	x:Class="PSM.Barcode.Views.LoginPage"
+	x:DataType="vm:LoginPageViewModel"
+	Title="Пользователь"
+>
+	<Grid ColumnDefinitions="*,Auto,*" RowDefinitions="*,Auto,*,Auto" RowSpacing="5" Padding="5">
+		<Frame Grid.Column="1" Grid.Row="1" Padding="0">
+			<VerticalStackLayout>
+				<Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5" Padding="0" Margin="0" IsVisible="{Binding IsLogged}">
+					<Label Grid.Row="0" Margin="5,0" Text="Пользователь:" FontSize="Title" />
+					
+					<Label Grid.Row="1" Margin="5,0" Text="{Binding User.UserId}" FontSize="Title" FontAttributes="Bold" />
+					<Label Grid.Row="2" Text="{Binding User.FullName, FallbackValue='не вошел'}" />
+					
+					<Button Grid.Row="3" Margin="3" Padding="25,0" Text="Выйти" Command="{Binding CmdLogOut}" HorizontalOptions="Center" />
+				</Grid>
+				<Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5" Padding="0" Margin="0" IsVisible="{Binding IsNotLogged}">
+					<Label Grid.Row="0" Margin="5,0" Text="Пользователь:" FontSize="Title" />
+					
+					<Entry Grid.Row="1" Margin="5,0" Placeholder="Имя" Text="{Binding UserName, Mode=TwoWay}" />
+					<Entry Grid.Row="2" Margin="5,0" Placeholder="Пароль" Text="{Binding UserPass, Mode=TwoWay}" IsPassword="True" />
+					
+					<Button Grid.Row="3" Margin="3" Padding="25,0" Text="Войти" Command="{Binding CmdLogIn}" HorizontalOptions="Center" />
+				</Grid>
+			</VerticalStackLayout>
+		</Frame>
+
+		<Frame Grid.Row="3" Grid.ColumnSpan="3" IsVisible="{Binding MessageVisible}">
+			<VerticalStackLayout HorizontalOptions="Fill">
+				<Label Margin="3" Text="{Binding Message}" />
+				<HorizontalStackLayout>
+					<Button Padding="10,5" Text="Закрыть" Command="{Binding CmdMsgHide}" MinimumHeightRequest="25" />
+				</HorizontalStackLayout>
+			</VerticalStackLayout>
+		</Frame>
+	</Grid>
 </ContentPage>

@@ -4,6 +4,7 @@ using PSM.Barcode.DB;
 using PSM.Barcode.Models;
 using PSM.Barcode.Services;
 using System.Windows.Input;
+
 namespace PSM.Barcode.ViewModels;
 
 public class BarcodeViewModel : ObservableObject

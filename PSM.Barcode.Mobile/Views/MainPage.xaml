@@ -5,13 +5,14 @@
 	xmlns:vm="clr-namespace:PSM.Barcode.ViewModels"
 	x:Class="PSM.Barcode.Views.MainPage"
 	x:DataType="vm:MainPageViewModel"
+	Title="PSM.Barcode"
 >
-	<Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*">
+	<Grid RowDefinitions="2*,Auto,*" ColumnDefinitions="*,Auto,*">
 		<VerticalStackLayout Grid.Column="1" Grid.Row="1">
-			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Штрихкоды" Command="{Binding CmdToBarcodes}" BackgroundColor="{StaticResource Magenta}" />
-			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Пары" Command="{Binding CmdToPairs}" BackgroundColor="{StaticResource Magenta}" />
-			<Button Margin="0,15,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Пользователь" Command="{Binding CmdToLogins}" />
-			<Button Margin="0,1,0,0" Padding="25,0" MinimumHeightRequest="30" Text="Настройки" Command="{Binding CmdToOptions}" />
+			<Button Margin="0,0,0,0" Padding="25,10" MinimumHeightRequest="60" Text="{Binding BarcodesCount, StringFormat='Штрихкоды: {0}'}" FontSize="Medium" FontAttributes="Bold" Command="{Binding CmdToBarcodes}" BackgroundColor="{StaticResource Magenta}" />
+			<Button Margin="0,15,0,0" Padding="25,10" MinimumHeightRequest="40" Text="{Binding PairsCount, StringFormat='Пары: {0}'}" FontSize="Medium" Command="{Binding CmdToPairs}" BackgroundColor="{StaticResource Magenta}" />
+			<Button Margin="0,15,0,0" Padding="25,10" MinimumHeightRequest="40" Text="{Binding User, StringFormat='Пользователь: {0}'}" FontSize="Medium" Command="{Binding CmdToLogins}" />
+			<Button Margin="0,3,0,0" Padding="25,10" MinimumHeightRequest="40" Text="{Binding Server, StringFormat='Настройки: {0}'}" FontSize="Medium" Command="{Binding CmdToOptions}" />
 		</VerticalStackLayout>
 	</Grid>
 </ContentPage>

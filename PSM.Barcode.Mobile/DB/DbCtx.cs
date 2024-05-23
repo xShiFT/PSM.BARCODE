@@ -10,9 +10,10 @@ public class DbCtx : DbContext
     {
         SQLitePCL.Batteries_V2.Init();
 
-        Database.EnsureCreated();
+		//Database.EnsureDeleted();
+		//Database.EnsureCreated();
 
-		InitDefaultValues();
+		//InitDefaultValues();
 	}
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,7 +28,7 @@ public class DbCtx : DbContext
 	public DbSet<BarcodePair> Pairs { get; set; }
 
 
-
+	/*
 	private void InitDefaultValues()
 	{
 		Dictionary<string, string> DefaultPairs = new()
@@ -49,4 +50,5 @@ public class DbCtx : DbContext
 			SaveChanges();
 		}
 	}
+	//*/
 }
