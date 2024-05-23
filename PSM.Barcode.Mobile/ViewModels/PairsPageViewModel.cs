@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PSM.Barcode.DB;
+using PSM.Barcode.Models;
 using PSM.Barcode.Services;
 using System.Windows.Input;
 
@@ -8,6 +9,14 @@ namespace PSM.Barcode.ViewModels;
 
 public class PairsPageViewModel: ObservableObject
 {
+	private static async Task<string> LoadPairs()
+	{
+		using var stream = await FileSystem.OpenAppPackageFileAsync("pairs.txt");
+		using var reader = new StreamReader(stream);
+		return reader.ReadToEnd();
+	}
+
+
 	private readonly DbCtx _ctx;
 	private readonly OptionsService _options;
 	private readonly RestService _rest;
@@ -21,6 +30,8 @@ public class PairsPageViewModel: ObservableObject
 		CmdClear   = new      RelayCommand(Clear);
 		CmdUpdate  = new AsyncRelayCommand(Update);
 		CmdMsgHide = new      RelayCommand(MessageHide);
+
+		CmdLoadFromPairs = new AsyncRelayCommand(LoadFromPairs);
 	}
 
 
@@ -110,7 +121,26 @@ public class PairsPageViewModel: ObservableObject
 		Message = string.Empty;
 	}
 
+	public ICommand CmdLoadFromPairs { get; }
+	private async Task LoadFromPairs()
+	{
+		//foreach (var pair in _ctx.Pairs)
+		//	_ctx.Pairs.Remove(pair);
+		_ctx.Pairs.RemoveRange(_ctx.Pairs);
+		await _ctx.SaveChangesAsync();
+
+		string pairs = await LoadPairs();
+		var bpairs = pairs.Split('\n').Select(l =>
+		{
+			var a = l.Split('|');
+			return new BarcodePair { Barcode = a[0], Outcode = a[1] };
+		});
+		await _ctx.Pairs.AddRangeAsync(bpairs);
+		await _ctx.SaveChangesAsync();
+	}
+
 	#endregion
+
 
 	#region Message
 	private string _message = string.Empty;

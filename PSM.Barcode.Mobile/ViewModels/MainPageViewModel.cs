@@ -10,15 +10,16 @@ namespace PSM.Barcode.ViewModels;
 public class MainPageViewModel: ObservableObject
 {
 	private readonly DbCtx _ctx;
-	private readonly BarcodesService _barcodes;
+	//private readonly BarcodesService _barcodes;
 	private readonly OptionsService _options;
 
-	public MainPageViewModel(DbCtx ctx, BarcodesService barcodes, OptionsService options)
+	//BarcodesService barcodes, 
+	public MainPageViewModel(DbCtx ctx, OptionsService options)
 	{
 		_ctx = ctx;
 
-		_barcodes = barcodes;
-		_barcodes.Changed += (s,e) => OnPropertyChanged(nameof(BarcodesCount));
+		//_barcodes = barcodes;
+		//_barcodes.Changed += (s,e) => OnPropertyChanged(nameof(BarcodesCount));
 
 		_options = options;
 		_options.ServerChanged += (s, e) => OnPropertyChanged(nameof(Server));
@@ -34,7 +35,7 @@ public class MainPageViewModel: ObservableObject
 
 	#endregion
 
-	public int BarcodesCount => _barcodes.Count;
+	public int BarcodesCount => _ctx.Items.Count(); // _barcodes.Count;
 	public int PairsCount => _ctx.Pairs.Count();
 
 	public string Server => _options.ServerName;
