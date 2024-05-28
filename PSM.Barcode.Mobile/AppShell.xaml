@@ -7,7 +7,8 @@
 
 	Shell.FlyoutBehavior="Disabled"
 
-	Title="PSM.Barcode" BackgroundColor="{StaticResource Primary}"
+	Title="PSM.Barcode"
+	BackgroundColor="{StaticResource Primary}"
 >
 	<ShellContent ContentTemplate="{DataTemplate v:MainPage}" />
 </Shell>

@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PSM.Barcode.DB;
 using PSM.Barcode.Models;
 using PSM.Barcode.Services;
+using PSM.Barcode.Views;
 using System.Windows.Input;
 
 namespace PSM.Barcode.ViewModels;
@@ -24,7 +24,6 @@ public class LoginPageViewModel: ObservableObject
 
 		CmdLogIn   = new AsyncRelayCommand(LogIn);
 		CmdLogOut  = new      RelayCommand(LogOut);
-		CmdMsgHide = new      RelayCommand(MessageHide);
 	}
 
 	#region Options Events
@@ -35,7 +34,6 @@ public class LoginPageViewModel: ObservableObject
 		OnPropertyChanged(nameof(IsNotLogged));
 		OnPropertyChanged(nameof(User));
 
-		Message = "";
 		UserName = "";
 		UserPass = "";
 	}
@@ -71,19 +69,19 @@ public class LoginPageViewModel: ObservableObject
 
 	public ICommand CmdLogIn { get; }
 
-	private async Task UpdateUsers()
+	private async Task<bool> UpdateUsers()
 	{
 		var result = await _rest.GetUsers();
 		if (!string.IsNullOrWhiteSpace(result.Error))
 		{
-			Message = (Message + "\n" + result.Error).Trim();
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
+			return false;
 		}
 		else
 		{
 			foreach (var user in result.Value!)
 			{
 				user.Password = "";
-
 				var u = _ctx.Users.FirstOrDefault(u => u.UserId == user.UserId);
 				if (u != null)
 				{
@@ -98,26 +96,32 @@ public class LoginPageViewModel: ObservableObject
 				}
 			}
 			_ctx.SaveChanges();
-			Message = (Message + "\nСписок пользователей обновлён").Trim();
 		}
+		return true;
 	}
 	private async Task LogIn()
 	{
-		Message = "";
-
-		await UpdateUsers();
+		var res = await UpdateUsers();
+		if (!res)
+		{
+			return;
+		}
 
 		if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(UserPass))
 		{
-			Message = (Message + "\n\nОшибка: Имя и Пароль не должны быть пустыми!").Trim();
+			await Shell.Current.DisplayAlert("Ошибка", "Имя и Пароль не должны быть пустыми!", "Закрыть");
 			return;
 		}
 
 		var dto = new AuthDto { Login = UserName, Password = UserPass };
 
 		var result = await _rest.LogIn(dto);
+
 		if (!string.IsNullOrEmpty(result.Error))
-			Message = (Message + "\n\n" + result.Error).Trim();
+		{
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
+		}
+
 		if (result.Value > 0)
 		{
 			_options.SetUserId(result.Value);
@@ -130,26 +134,7 @@ public class LoginPageViewModel: ObservableObject
 		_options.SetUserId(0);
 	}
 
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
+	public ICommand CmdToBarcodes { get; } = new AsyncRelayCommand(async () => await Shell.Current.GoToAsync(nameof(BarcodesPage)));
 
-	#endregion
-
-	#region Message
-	private string _message = string.Empty;
-
-	public string Message
-	{
-		get => _message;
-		private set
-		{
-			SetProperty(ref _message, value);
-			OnPropertyChanged(nameof(MessageVisible));
-		}
-	}
-	public bool MessageVisible => Message != string.Empty;
 	#endregion
 }

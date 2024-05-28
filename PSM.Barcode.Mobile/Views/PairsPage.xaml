@@ -31,13 +31,13 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 		</Frame>
-		<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
+		<!--<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
 			<VerticalStackLayout HorizontalOptions="Fill">
 				<Label Margin="3" Text="{Binding Message}" />
 				<HorizontalStackLayout>
 					<Button Padding="10,5" Text="Закрыть" Command="{Binding CmdMsgHide}" MinimumHeightRequest="25" />
 				</HorizontalStackLayout>
 			</VerticalStackLayout>
-		</Frame>
+		</Frame>-->
 	</Grid>
 </ContentPage>

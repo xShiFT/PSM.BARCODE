@@ -9,6 +9,7 @@ public class BarcodesService(DbCtx ctx)
 	private readonly DbCtx _ctx = ctx;
 
 	public IEnumerable<BarcodeViewModel> Items => _ctx.Items.Select(item => new BarcodeViewModel(item));
+
 	public int Count => _ctx.Items.Count();
 
 	public void Add(string barcode)

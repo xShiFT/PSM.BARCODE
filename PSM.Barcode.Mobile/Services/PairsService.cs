@@ -1,6 +1,5 @@
 ﻿using PSM.Barcode.DB;
 using PSM.Barcode.Models;
-using PSM.Barcode.ViewModels;
 
 namespace PSM.Barcode.Services;
 
@@ -27,6 +26,22 @@ public class PairsService(DbCtx ctx)
 		Added?.Invoke(this, new (item));
 		Changed?.Invoke(this, new ());
 	}
+	public void AddRange(IEnumerable<BarcodePair> pairs)
+	{
+		foreach (var pair in pairs)
+		{
+			var item = _ctx.Pairs.FirstOrDefault(itm => itm.Barcode == pair.Barcode);
+			if (item != null)
+			{
+				continue;
+			}
+			_ctx.Pairs.Add(pair);
+		}
+		_ctx.SaveChanges();
+
+		AddedRange?.Invoke(this, new(pairs));
+		Changed?.Invoke(this, new());
+	}
 	public void Delete(string barcode)
 	{
 		var item = _ctx.Pairs.FirstOrDefault(itm => itm.Barcode == barcode);
@@ -50,18 +65,26 @@ public class PairsService(DbCtx ctx)
 
 	public delegate void DublicatedEventHandler(object sender, ChangedPairEventArgs e);
 	public delegate void AddedEventHandler(object sender, ChangedPairEventArgs e);
+	public delegate void AddedRangeEventHandler(object sender, ChangedPairsEventArgs e);
 	public delegate void DeletedEventHandler(object sender, ChangedPairEventArgs e);
 	public delegate void ClearedEventHandler(object sender, EventArgs e);
 	public delegate void ChangedEventHandler(object sender, EventArgs e);
 
 	public event DublicatedEventHandler? Dublicated;
 	public event AddedEventHandler? Added;
+	public event AddedRangeEventHandler? AddedRange;
 	public event DeletedEventHandler? Deleted;
 	public event ClearedEventHandler? Cleared;
 	public event ChangedEventHandler? Changed;
 }
 
+
 public class ChangedPairEventArgs(BarcodePair item)
 {
 	public BarcodePair Item { get; } = item;
+}
+
+public class ChangedPairsEventArgs(IEnumerable<BarcodePair> items)
+{
+	public IEnumerable<BarcodePair> Items { get; } = items;
 }

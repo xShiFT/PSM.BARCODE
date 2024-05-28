@@ -11,7 +11,7 @@ public class DbCtx : DbContext
         SQLitePCL.Batteries_V2.Init();
 
 		//Database.EnsureDeleted();
-		//Database.EnsureCreated();
+		Database.EnsureCreated();
 
 		//InitDefaultValues();
 	}

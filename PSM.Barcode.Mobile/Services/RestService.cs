@@ -58,10 +58,18 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error += $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}
-
 
 	public async Task<RestResult<List<BarcodePair>>> GetPairs(string last, int size)
 	{
@@ -82,9 +90,19 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error += $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}
+
 	public async Task<RestResult<List<User>>> GetUsers()
 	{
 		var result = new RestResult<List<User>>();
@@ -103,9 +121,19 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error += $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}
+
 	public async Task<RestResult<int>> LogIn(AuthDto user)
 	{
 		RestResult<int> result = new();
@@ -126,6 +154,15 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error += $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}
@@ -149,6 +186,15 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error += $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}
@@ -175,6 +221,15 @@ public class RestService
 		catch (Exception ex)
 		{
 			result.Error = ex.Message;
+			var i = 0;
+			var exi = ex.InnerException;
+			while (exi != null)
+			{
+				result.Error = result.Error + $"\n\n{exi.Message}";
+				exi = exi.InnerException;
+				i++;
+				if (i > 5) break;
+			}
 			return result;
 		}
 	}

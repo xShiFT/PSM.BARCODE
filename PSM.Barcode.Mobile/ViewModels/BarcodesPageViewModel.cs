@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PSM.Barcode.Models;
 using PSM.Barcode.Services;
+using PSM.Barcode.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -27,7 +27,6 @@ public class BarcodesPageViewModel: ObservableObject
 		Barcodes   = new ObservableCollection<BarcodeViewModel>( _barcodes.Items );
 
 		//CmdAdd     = new      RelayCommand(Add);
-		CmdMsgHide = new      RelayCommand(MessageHide);
 		CmdClear   = new AsyncRelayCommand(ItemsClear);
 		CmdSend    = new AsyncRelayCommand(ItemsSend);
 	}
@@ -58,8 +57,6 @@ public class BarcodesPageViewModel: ObservableObject
 	private async void BarcodesService_Dublicated(object sender, ChangedBarcodeEventArgs e)
 	{
 		await Shell.Current.DisplayAlert("Штрихкоды", $"Повторное добавление: {e.Item.Barcode}", "Закрыть");
-		//Message = $"{Message}\nПовтор: {e.Item.Barcode}".Trim();
-		//await Shell.Current.DisplayAlert("Штрихкоды", $"Повторное добавление: {e.Item.Barcode}", "Закрыть");
 	}
 
 	#endregion
@@ -83,50 +80,64 @@ public class BarcodesPageViewModel: ObservableObject
 	private async Task ItemsClear()
 	{
 		bool answer = await Shell.Current.DisplayAlert("Штрихкоды", "Очистить список?", "Да", "Нет");
-		if (answer) _barcodes.Clear();
+		if (answer)
+		{
+			_barcodes.Clear();
+		}
 	}
 
 	public ICommand CmdSend { get; }
-	private async Task<int> SMOP_Clear()
+	private async Task<(bool,int)> SMOP_Clear()
 	{
 		var result = await _rest.DeleteBarcodes(_options.SavedUserId);
-		if (result != null && result.Error != "")
-			Message = result.Error ?? "";
-		return result?.Value ?? 0;
+		if (result != null && !string.IsNullOrEmpty(result.Error))
+		{
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
+			return (false, 0);
+		}
+		return (true,result?.Value ?? 0);
 	}
-	private async Task<int> SMOP_Send()
+	private async Task<(bool,int)> SMOP_Send()
 	{
 		var result = await _rest.SendBarcodes(_options.SavedUserId, Barcodes.Select(b => b.Barcode));
-		if (result != null && result.Error != "")
-			Message = result.Error ?? "";
-		return result?.Value ?? 0;
+		if (result != null && !string.IsNullOrEmpty(result.Error))
+		{
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
+			return (false, 0);
+		}
+		return (true, result?.Value ?? 0);
 	}
 	private async Task ItemsSend()
 	{
-		await SMOP_Clear();
-		var inserted = await SMOP_Send();
-		Message = (Message + $"\n\nУспешно добавлено: {inserted}.").Trim();
-	}
-
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
-
-	#endregion
-
-	#region Message
-	private string _message = string.Empty;
-	public string Message
-	{
-		get => _message;
-		private set
+		if (_barcodes.Count == 0)
 		{
-			SetProperty(ref _message, value);
-			OnPropertyChanged(nameof(MessageVisible));
+			await Shell.Current.DisplayAlert("Штрихкоды", "Не чего отправлять", "Закрыть");
+			return;
+		}
+		if (_options.SavedUserId == 0)
+		{
+			bool resl = await Shell.Current.DisplayAlert("Штрихкоды", "Перед отправкой, вам следует авторизоваться", "Перейти", "Закрыть");
+			if (resl)
+			{
+				await Shell.Current.GoToAsync(nameof(LoginPage));
+			}
+			return;
+		}
+		var (resc,_) = await SMOP_Clear();
+		if (!resc)
+		{
+			return;
+		}
+		var (resi,inserted) = await SMOP_Send();
+		if (!resi)
+		{
+			return;
+		}
+		if (inserted > 0)
+		{
+			await Shell.Current.DisplayAlert("Штрихкоды", $"Успешно отправлено: {inserted}.", "Закрыть");
 		}
 	}
-	public bool MessageVisible => Message != string.Empty;
+
 	#endregion
 }

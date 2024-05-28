@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PSM.Barcode.DB;
 using PSM.Barcode.Services;
 using System.Windows.Input;
 
@@ -8,21 +7,21 @@ namespace PSM.Barcode.ViewModels;
 
 public class PairsPageViewModel: ObservableObject
 {
-	private readonly DbCtx _ctx;
+	private readonly PairsService _pairs;
 	private readonly OptionsService _options;
 	private readonly RestService _rest;
 
-	public PairsPageViewModel(DbCtx ctx, OptionsService options, RestService rest)
+	public PairsPageViewModel(PairsService pairs, OptionsService options, RestService rest)
     {
-		_ctx = ctx;
 		_options = options;
 		_rest = rest;
 
+		_pairs = pairs;
+		_pairs.Changed += (s,e) => OnPropertyChanged(nameof(Items));
+
 		CmdClear   = new      RelayCommand(Clear);
 		CmdUpdate  = new AsyncRelayCommand(Update);
-		CmdMsgHide = new      RelayCommand(MessageHide);
 	}
-
 
 	private string _filter = "";
 	public string Filter
@@ -40,10 +39,12 @@ public class PairsPageViewModel: ObservableObject
 	{
 		get
 		{
-			Count = _ctx.Pairs
-				.Where(p => Filter.Length == 0 || p.Barcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase) || p.Outcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase)).Count();
+			
+			Count = _pairs.Items
+				.Where(p => Filter.Length == 0 || p.Barcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase) || p.Outcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
+				.Count();
 
-			return _ctx.Pairs
+			return _pairs.Items
 				.Where(p => Filter.Length == 0 || p.Barcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase) || p.Outcode.Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
 				.OrderByDescending(p => p.Barcode)
 				.Take(100)
@@ -59,7 +60,7 @@ public class PairsPageViewModel: ObservableObject
 	}
 
 
-	private List<int> _sizes = [100, 250, 500, 1000, 2500, 5000];
+	private readonly List<int> _sizes = [100, 250, 500, 1000, 2500, 5000];
 	public List<int> Sizes => _sizes;
 
 	public int PageSize
@@ -77,52 +78,34 @@ public class PairsPageViewModel: ObservableObject
 	public ICommand CmdClear { get; }
 	private void Clear()
 	{
-		foreach (var pair in _ctx.Pairs)
-			_ctx.Pairs.Remove(pair);
-		_ctx.SaveChanges();
+		_pairs.Clear();
 	}
 
 	public ICommand CmdUpdate { get; }
 	private async Task Update()
 	{
-		Message = "";
-		
-		var last = _ctx.Pairs.Max(p => p.Barcode) ?? "23000000";
+		var last = _pairs.Items.Max(p => p.Barcode) ?? "23000000";
 
 		var result = await _rest.GetPairs(last, _options.PageSize);
 		if (result.Error != null)
-			Message = result.Error;
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
 		else
 		{
 			var list = result.Value ?? [];
+			if (list.Count == 0)
+			{
+				await Shell.Current.DisplayAlert("Штрихкоды", "На текущий момент, все пары обновлены", "Закрыть");
+			}
+			/*
 			foreach (var pair in list)
 			{
-				var p = _ctx.Pairs.FirstOrDefault(p => p.Barcode == pair.Barcode);
-				if (p == null) _ctx.Pairs.Add(pair);
+				var p = _pairs.Items.FirstOrDefault(p => p.Barcode == pair.Barcode);
+				if (p == null) _pairs.Add(pair.Barcode, pair.Outcode);
 			}
-			_ctx.SaveChanges();
+			//*/
+			_pairs.AddRange(list);
 		}
 	}
 
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
-
-	#endregion
-
-	#region Message
-	private string _message = string.Empty;
-	public string Message
-	{
-		get => _message;
-		private set
-		{
-			SetProperty(ref _message, value);
-			OnPropertyChanged(nameof(MessageVisible));
-		}
-	}
-	public bool MessageVisible => Message != string.Empty;
 	#endregion
 }

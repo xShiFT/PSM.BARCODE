@@ -19,7 +19,6 @@ public class OptionsPageViewModel: ObservableObject
 
 		//CmdDefaultValue   = new      RelayCommand(() => _options.SetServer("http://isvt-44:60100|http://192.168.6.111:60100"));
 		CmdConnectionTest = new AsyncRelayCommand(ConnectionTest);
-		CmdMsgHide        = new      RelayCommand(MessageHide);
 	}
 
 	#region Options Events
@@ -28,8 +27,6 @@ public class OptionsPageViewModel: ObservableObject
 	{
 		OnPropertyChanged(nameof(ServerHost));
 		OnPropertyChanged(nameof(ServerIP));
-
-		Message = "";
 	}
 
 	#endregion
@@ -54,33 +51,12 @@ public class OptionsPageViewModel: ObservableObject
 	public ICommand CmdConnectionTest { get; }
 	private async Task ConnectionTest()
 	{
-		Message = string.Empty;
 		var result = await _rest.Test();
 		if (result.Error != null)
-			Message = result.Error;
+			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
 		else
-			Message = $"HTTP CODE: {result.StatusCode}\nTEST OK";
+			await Shell.Current.DisplayAlert("Штрихкоды", $"HTTP CODE: {result.StatusCode}\nTEST OK", "Закрыть");
 	}
 
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
-
-	#endregion
-
-	#region Message
-	private string _message = string.Empty;
-	public string Message
-	{
-		get => _message;
-		private set
-		{
-			SetProperty(ref _message, value);
-			OnPropertyChanged(nameof(MessageVisible));
-		}
-	}
-	public bool MessageVisible => Message != string.Empty;
 	#endregion
 }
