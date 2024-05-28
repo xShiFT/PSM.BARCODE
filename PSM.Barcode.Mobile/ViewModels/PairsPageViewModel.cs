@@ -10,15 +10,6 @@ namespace PSM.Barcode.ViewModels;
 public class PairsPageViewModel: ObservableObject
 {
 	private readonly PairsService _pairs;
-	private static async Task<string> LoadPairs()
-	{
-		using var stream = await FileSystem.OpenAppPackageFileAsync("pairs.txt");
-		using var reader = new StreamReader(stream);
-		return reader.ReadToEnd();
-	}
-
-
-	private readonly DbCtx _ctx;
 	private readonly OptionsService _options;
 	private readonly RestService _rest;
 
@@ -32,9 +23,6 @@ public class PairsPageViewModel: ObservableObject
 
 		CmdClear   = new      RelayCommand(Clear);
 		CmdUpdate  = new AsyncRelayCommand(Update);
-		CmdMsgHide = new      RelayCommand(MessageHide);
-
-		CmdLoadFromPairs = new AsyncRelayCommand(LoadFromPairs);
 	}
 
 	private string _filter = "";
@@ -110,55 +98,9 @@ public class PairsPageViewModel: ObservableObject
 			{
 				await Shell.Current.DisplayAlert("Штрихкоды", "На текущий момент, все пары обновлены", "Закрыть");
 			}
-			/*
-			foreach (var pair in list)
-			{
-				var p = _pairs.Items.FirstOrDefault(p => p.Barcode == pair.Barcode);
-				if (p == null) _pairs.Add(pair.Barcode, pair.Outcode);
-			}
-			//*/
 			_pairs.AddRange(list);
 		}
 	}
 
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
-
-	public ICommand CmdLoadFromPairs { get; }
-	private async Task LoadFromPairs()
-	{
-		//foreach (var pair in _ctx.Pairs)
-		//	_ctx.Pairs.Remove(pair);
-		_ctx.Pairs.RemoveRange(_ctx.Pairs);
-		await _ctx.SaveChangesAsync();
-
-		string pairs = await LoadPairs();
-		var bpairs = pairs.Split('\n').Select(l =>
-		{
-			var a = l.Split('|');
-			return new BarcodePair { Barcode = a[0], Outcode = a[1] };
-		});
-		await _ctx.Pairs.AddRangeAsync(bpairs);
-		await _ctx.SaveChangesAsync();
-	}
-
-	#endregion
-
-
-	#region Message
-	private string _message = string.Empty;
-	public string Message
-	{
-		get => _message;
-		private set
-		{
-			SetProperty(ref _message, value);
-			OnPropertyChanged(nameof(MessageVisible));
-		}
-	}
-	public bool MessageVisible => Message != string.Empty;
 	#endregion
 }

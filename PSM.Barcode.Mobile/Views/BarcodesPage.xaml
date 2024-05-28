@@ -10,18 +10,19 @@
 	<!--<ContentPage.ToolbarItems>
 		<ToolbarItem Text="Add" Command="{Binding CmdAdd}" />
 	</ContentPage.ToolbarItems>-->
-	<Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
-		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
+	<Grid RowDefinitions="Auto,Auto,*" RowSpacing="5" Padding="5">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
 			<Button Grid.Column="0" Padding="25,10" Text="Очистить" FontSize="Medium" Command="{Binding CmdClear}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Magenta}" />
 			<Button Grid.Column="2" Padding="25,10" Text="Отправить" FontSize="Medium" Command="{Binding CmdSend}" MinimumHeightRequest="40" />
-			<Button Grid.Column="3" Padding="25,10" Text="Загрузить" FontSize="Small" Command="{Binding CmdLast500}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Gray300}" />
 		</Grid>
+
 		<Frame Grid.Row="1" Padding="0,3">
 			<HorizontalStackLayout>
 				<Label Margin="15,3,3,3" Text="Собранно:" FontSize="Medium" VerticalOptions="Center" />
 				<Label Margin="3,3,15,3" Text="{Binding Barcodes.Count}" FontSize="Medium" FontAttributes="Bold" VerticalOptions="Center" />
 			</HorizontalStackLayout>
 		</Frame>
+
 		<Frame Grid.Row="2" Padding="5">
 			<CollectionView
 				ItemsSource="{Binding BarcodesReverse}"
@@ -47,14 +48,5 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 		</Frame>
-
-		<!--<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
-			<VerticalStackLayout HorizontalOptions="Fill">
-				<Label Margin="3" Text="{Binding Message}" />
-				<HorizontalStackLayout>
-					<Button Padding="10,5" Text="Закрыть" Command="{Binding CmdMsgHide}" MinimumHeightRequest="25" />
-				</HorizontalStackLayout>
-			</VerticalStackLayout>
-		</Frame>-->
 	</Grid>
 </ContentPage>

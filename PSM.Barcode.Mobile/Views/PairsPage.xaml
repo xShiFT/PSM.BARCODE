@@ -7,12 +7,11 @@
 	x:DataType="vm:PairsPageViewModel"
 	Title="Пары"
 >
-	<Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
+	<Grid RowDefinitions="Auto,Auto,*" RowSpacing="5" Padding="5">
 		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="5">
 			<Button Grid.Column="0" Padding="25,10" Text="Очистить" FontSize="Medium" Command="{Binding CmdClear}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Magenta}" />
 			<Picker Grid.Column="2" ItemsSource="{Binding Sizes}" SelectedItem="{Binding PageSize, Mode=TwoWay}" MinimumWidthRequest="50" />
 			<Button Grid.Column="3" Padding="25,10" Text="Обновить" FontSize="Medium" Command="{Binding CmdUpdate}" MinimumHeightRequest="40" />
-			<Button Grid.Column="4" Padding="25,10" Text="Загрузить" FontSize="Small" Command="{Binding CmdLoadFromPairs}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Gray300}" />
 		</Grid>
 
 		<Frame Grid.Row="1" Padding="0,3">
@@ -34,15 +33,5 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 		</Frame>
-		<!--<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
-
-		<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
-			<VerticalStackLayout HorizontalOptions="Fill">
-				<Label Margin="3" Text="{Binding Message}" />
-				<HorizontalStackLayout>
-					<Button Padding="10,5" Text="Закрыть" Command="{Binding CmdMsgHide}" MinimumHeightRequest="25" />
-				</HorizontalStackLayout>
-			</VerticalStackLayout>
-		</Frame>-->
 	</Grid>
 </ContentPage>

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PSM.Barcode.DB;
-using PSM.Barcode.Models;
 using PSM.Barcode.Services;
 using PSM.Barcode.Views;
 using System.Collections.ObjectModel;
@@ -33,7 +32,6 @@ public class BarcodesPageViewModel: ObservableObject
 		//CmdAdd     = new      RelayCommand(Add);
 		CmdClear   = new AsyncRelayCommand(ItemsClear);
 		CmdSend    = new AsyncRelayCommand(ItemsSend);
-		CmdLast500 = new      RelayCommand(AddLast500);
 	}
 
 	#region BarcodesService Events
@@ -104,7 +102,7 @@ public class BarcodesPageViewModel: ObservableObject
 			await Shell.Current.DisplayAlert("Ошибка", result.Error, "Закрыть");
 			return (false, 0);
 		}
-		return (true,result?.Value ?? 0);
+		return (true, result?.Value ?? 0);
 	}
 	private async Task<(bool,int)> SMOP_Send()
 	{
@@ -119,43 +117,6 @@ public class BarcodesPageViewModel: ObservableObject
 	private async Task ItemsSend()
 	{
 		if (_barcodes.Count == 0)
-		await SMOP_Clear();
-		var inserted = await SMOP_Send();
-		Message = (Message + $"\n\nУспешно добавлено: {inserted}.").Trim();
-	}
-
-	public ICommand CmdMsgHide { get; }
-	private void MessageHide()
-	{
-		Message = string.Empty;
-	}
-
-	#endregion
-
-	public ICommand CmdLast500 { get; }
-	private void AddLast500()
-	{
-		_ctx.Items.RemoveRange(_ctx.Items);
-		_ctx.SaveChanges();
-
-		var list = _ctx.Pairs
-			.OrderByDescending(p => p.Barcode)
-			.Select(p => p.Barcode)
-			.Take(500)
-			.ToList()
-			.OrderBy(b => b)
-			.Select((b,i) => new BarcodeItem { ID = i + 1, Barcode = b })
-			;
-		_ctx.Items.AddRange(list);
-		_ctx.SaveChanges();
-	}
-
-	#region Message
-	private string _message = string.Empty;
-	public string Message
-	{
-		get => _message;
-		private set
 		{
 			await Shell.Current.DisplayAlert("Штрихкоды", "Не чего отправлять", "Закрыть");
 			return;
@@ -169,12 +130,12 @@ public class BarcodesPageViewModel: ObservableObject
 			}
 			return;
 		}
-		var (resc,_) = await SMOP_Clear();
+		var (resc, _) = await SMOP_Clear();
 		if (!resc)
 		{
 			return;
 		}
-		var (resi,inserted) = await SMOP_Send();
+		var (resi, inserted) = await SMOP_Send();
 		if (!resi)
 		{
 			return;
