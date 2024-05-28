@@ -8,30 +8,35 @@
 	Title="Пары"
 >
 	<Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
-		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="5">
 			<Button Grid.Column="0" Padding="25,10" Text="Очистить" FontSize="Medium" Command="{Binding CmdClear}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Magenta}" />
-			<Picker Grid.Column="2" ItemsSource="{Binding Sizes}" SelectedItem="{Binding PageSize, Mode=TwoWay}" />
+			<Picker Grid.Column="2" ItemsSource="{Binding Sizes}" SelectedItem="{Binding PageSize, Mode=TwoWay}" MinimumWidthRequest="50" />
 			<Button Grid.Column="3" Padding="25,10" Text="Обновить" FontSize="Medium" Command="{Binding CmdUpdate}" MinimumHeightRequest="40" />
+			<Button Grid.Column="4" Padding="25,10" Text="Загрузить" FontSize="Small" Command="{Binding CmdLoadFromPairs}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Gray300}" />
 		</Grid>
+
 		<Frame Grid.Row="1" Padding="0,3">
 			<Grid ColumnDefinitions="*,Auto">
 				<Entry Grid.Column="0" Margin="5,0" Placeholder="Быстрый Поиск" Text="{Binding Filter, Mode=TwoWay}" />
 				<Label Grid.Column="1" Margin="5,0" Text="{Binding Count,StringFormat='Кол-во: {0}'}" FontSize="Medium" VerticalTextAlignment="Center" />
 			</Grid>
 		</Frame>
+
 		<Frame Grid.Row="2" Padding="5">
 			<CollectionView ItemsSource="{Binding Items}" ItemsUpdatingScrollMode="KeepItemsInView" SelectionMode="Single">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="vm:PairViewModel">
 						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="5" Padding="5">
 							<Label Grid.Column="0" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
-							<Label Grid.Column="1" Text="{Binding Outcode}" />
+							<Label Grid.Column="1" Text="{Binding Outcode}" VerticalTextAlignment="Center" />
 						</Grid>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 		</Frame>
 		<!--<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
+
+		<Frame Grid.Row="3" IsVisible="{Binding MessageVisible}">
 			<VerticalStackLayout HorizontalOptions="Fill">
 				<Label Margin="3" Text="{Binding Message}" />
 				<HorizontalStackLayout>

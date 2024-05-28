@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PSM.Barcode.DB;
+using PSM.Barcode.Models;
 using PSM.Barcode.Services;
 using PSM.Barcode.Views;
 using System.Collections.ObjectModel;
@@ -10,12 +12,14 @@ namespace PSM.Barcode.ViewModels;
 public class BarcodesPageViewModel: ObservableObject
 {
 	private readonly OptionsService _options;
+	private readonly DbCtx _ctx;
 	private readonly BarcodesService _barcodes;
 	private readonly RestService _rest;
 
-	public BarcodesPageViewModel(OptionsService options, BarcodesService barcodes, RestService rest)
+	public BarcodesPageViewModel(OptionsService options, DbCtx ctx, BarcodesService barcodes, RestService rest)
 	{
 		_options = options;
+		_ctx = ctx;
 		_rest = rest;
 
 		_barcodes = barcodes;
@@ -29,6 +33,7 @@ public class BarcodesPageViewModel: ObservableObject
 		//CmdAdd     = new      RelayCommand(Add);
 		CmdClear   = new AsyncRelayCommand(ItemsClear);
 		CmdSend    = new AsyncRelayCommand(ItemsSend);
+		CmdLast500 = new      RelayCommand(AddLast500);
 	}
 
 	#region BarcodesService Events
@@ -41,18 +46,21 @@ public class BarcodesPageViewModel: ObservableObject
 		Barcodes.Remove(item);
 
 		OnPropertyChanged(nameof(Barcodes));
+		OnPropertyChanged(nameof(BarcodesReverse));
 	}
 	private void BarcodesService_Added(object sender, ChangedBarcodeEventArgs e)
 	{
 		Barcodes.Add(new(e.Item));
 
 		OnPropertyChanged(nameof(Barcodes));
+		OnPropertyChanged(nameof(BarcodesReverse));
 	}
 	private void BarcodesService_Cleared(object sender, EventArgs e)
 	{
 		Barcodes.Clear();
 
 		OnPropertyChanged(nameof(Barcodes));
+		OnPropertyChanged(nameof(BarcodesReverse));
 	}
 	private async void BarcodesService_Dublicated(object sender, ChangedBarcodeEventArgs e)
 	{
@@ -62,6 +70,7 @@ public class BarcodesPageViewModel: ObservableObject
 	#endregion
 
 	public ObservableCollection<BarcodeViewModel> Barcodes { get; }
+	public IEnumerable<BarcodeViewModel> BarcodesReverse => Barcodes.Reverse();
 
 	#region Commands
 
@@ -110,6 +119,43 @@ public class BarcodesPageViewModel: ObservableObject
 	private async Task ItemsSend()
 	{
 		if (_barcodes.Count == 0)
+		await SMOP_Clear();
+		var inserted = await SMOP_Send();
+		Message = (Message + $"\n\nУспешно добавлено: {inserted}.").Trim();
+	}
+
+	public ICommand CmdMsgHide { get; }
+	private void MessageHide()
+	{
+		Message = string.Empty;
+	}
+
+	#endregion
+
+	public ICommand CmdLast500 { get; }
+	private void AddLast500()
+	{
+		_ctx.Items.RemoveRange(_ctx.Items);
+		_ctx.SaveChanges();
+
+		var list = _ctx.Pairs
+			.OrderByDescending(p => p.Barcode)
+			.Select(p => p.Barcode)
+			.Take(500)
+			.ToList()
+			.OrderBy(b => b)
+			.Select((b,i) => new BarcodeItem { ID = i + 1, Barcode = b })
+			;
+		_ctx.Items.AddRange(list);
+		_ctx.SaveChanges();
+	}
+
+	#region Message
+	private string _message = string.Empty;
+	public string Message
+	{
+		get => _message;
+		private set
 		{
 			await Shell.Current.DisplayAlert("Штрихкоды", "Не чего отправлять", "Закрыть");
 			return;

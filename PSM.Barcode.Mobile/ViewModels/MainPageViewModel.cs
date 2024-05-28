@@ -16,6 +16,17 @@ public class MainPageViewModel: ObservableObject
 	{
 		_barcodes = barcodes;
 		_barcodes.Changed += (s,e) => OnPropertyChanged(nameof(BarcodesCount));
+	private readonly DbCtx _ctx;
+	//private readonly BarcodesService _barcodes;
+	private readonly OptionsService _options;
+
+	//BarcodesService barcodes, 
+	public MainPageViewModel(DbCtx ctx, OptionsService options)
+	{
+		_ctx = ctx;
+
+		//_barcodes = barcodes;
+		//_barcodes.Changed += (s,e) => OnPropertyChanged(nameof(BarcodesCount));
 
 		_pairs = pairs;
 		_pairs.Changed += (s, e) => OnPropertyChanged(nameof(PairsCount));
@@ -36,6 +47,8 @@ public class MainPageViewModel: ObservableObject
 
 	public int BarcodesCount => _barcodes.Count;
 	public int PairsCount => _pairs.Count;
+	public int BarcodesCount => _ctx.Items.Count(); // _barcodes.Count;
+	public int PairsCount => _ctx.Pairs.Count();
 
 	public string Server => _options.ServerName;
 	public string User => _options.SavedUser?.FirstName ?? "не вошел";

@@ -11,9 +11,10 @@
 		<ToolbarItem Text="Add" Command="{Binding CmdAdd}" />
 	</ContentPage.ToolbarItems>-->
 	<Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
-		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
 			<Button Grid.Column="0" Padding="25,10" Text="Очистить" FontSize="Medium" Command="{Binding CmdClear}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Magenta}" />
 			<Button Grid.Column="2" Padding="25,10" Text="Отправить" FontSize="Medium" Command="{Binding CmdSend}" MinimumHeightRequest="40" />
+			<Button Grid.Column="3" Padding="25,10" Text="Загрузить" FontSize="Small" Command="{Binding CmdLast500}" MinimumHeightRequest="40" BackgroundColor="{StaticResource Gray300}" />
 		</Grid>
 		<Frame Grid.Row="1" Padding="0,3">
 			<HorizontalStackLayout>
@@ -23,7 +24,7 @@
 		</Frame>
 		<Frame Grid.Row="2" Padding="5">
 			<CollectionView
-				ItemsSource="{Binding Barcodes}"
+				ItemsSource="{Binding BarcodesReverse}"
 				ItemsUpdatingScrollMode="KeepItemsInView"
 				SelectionMode="Single"
 			>
@@ -35,10 +36,10 @@
 									<SwipeItem Text="Удалить" BackgroundColor="LightPink" Command="{Binding CmdRemove}" />
 								</SwipeItems>
 							</SwipeView.LeftItems>
-							<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5" Padding="5">
-								<Label Grid.Column="0" Text="{Binding ID}" FontSize="Small" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
-								<Label Grid.Column="1" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" />
-								<Label Grid.Column="2" Text="{Binding Outcode}" />
+							<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5" Padding="0">
+								<Label Grid.Column="0" Margin="0" Padding="5,0" Text="{Binding ID}" VerticalTextAlignment="Center" />
+								<Label Grid.Column="1" Margin="0" Padding="5,0" Text="{Binding Barcode}" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center" />
+								<Label Grid.Column="2" Margin="0" Padding="5,0" Text="{Binding Outcode}" VerticalTextAlignment="Center" MaxLines="1" />
 							</Grid>
 						</SwipeView>
 						<!---->
