@@ -39,6 +39,16 @@
 		<DefaultLanguage>ru</DefaultLanguage>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <Debugger>Xamarin</Debugger>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <Debugger>Xamarin</Debugger>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <PublishTrimmed>False</PublishTrimmed>
+	</PropertyGroup>
+
 	<ItemGroup>
 	  <AndroidLibrary Include="Jars\platform_sdk_scanner.jar" />
 	</ItemGroup>
